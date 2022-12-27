@@ -21,9 +21,9 @@ public:
 		m_pMatInvViewVariable->SetMatrix(reinterpret_cast<const float*>(&newValue));
 	}
 
-	void SetNormalMap(const std::string& filePath, ID3D11Device* pDevice) const;
-	void SetSpecularMap(const std::string& filePath, ID3D11Device* pDevice) const;
-	void SetGlossinessMap(const std::string& filePath, ID3D11Device* pDevice) const;
+	void SetNormalMap(const Texture* normalTexture) const;
+	void SetSpecularMap(const Texture* specularTexture) const;
+	void SetGlossinessMap(const Texture* glossinessTexture) const;
 
 private:
 	ID3DX11EffectMatrixVariable* m_pMatWorldVariable;

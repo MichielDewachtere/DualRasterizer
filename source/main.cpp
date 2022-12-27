@@ -65,6 +65,8 @@ int main(int argc, char* args[])
 	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(h, 6);
 	std::cout << "[Key Bindings - SHARED]\n"
+		<< "  [I]   Show Info\n"
+		<< "  [C]   Clear Console\n\n"
 		<< "  [F1]  Toggle Rasterizer Mode (HARDWARE/SOFTWARE)\n"
 		<< "  [F2]  Toggle Vehicle Rotation (ON/OFF)\n"
 		<< "  [F9]  Cycle CullMode (BACK/FRONT/NONE)\n"
@@ -102,17 +104,41 @@ int main(int argc, char* args[])
 				isLooping = false;
 				break;
 			case SDL_KEYUP:
-				if (e.key.keysym.scancode == SDL_SCANCODE_F1) {}
-				if (e.key.keysym.scancode == SDL_SCANCODE_F2) { pRenderer->ToggleRotation(); }
-				if (e.key.keysym.scancode == SDL_SCANCODE_F3) { pRenderer->ToggleFireFx(); }
-				if (e.key.keysym.scancode == SDL_SCANCODE_F4) { pRenderer->ToggleSamplerState(); }
-				if (e.key.keysym.scancode == SDL_SCANCODE_F5) {}
-				if (e.key.keysym.scancode == SDL_SCANCODE_F6) {}
-				if (e.key.keysym.scancode == SDL_SCANCODE_F7) {}
-				if (e.key.keysym.scancode == SDL_SCANCODE_F8) {}
-				if (e.key.keysym.scancode == SDL_SCANCODE_F9) { pRenderer->ToggleCullMode(); }
-				if (e.key.keysym.scancode == SDL_SCANCODE_F10) { pRenderer->ToggleUniformClearColor(); }
-				if (e.key.keysym.scancode == SDL_SCANCODE_F11) { ToggleDisplayFPS(); }
+				if (e.key.keysym.scancode == SDL_SCANCODE_F1) { pRenderer->ToggleRasterizerMode(); }
+				else if (e.key.keysym.scancode == SDL_SCANCODE_F2) { pRenderer->ToggleRotation(); }
+				else if (e.key.keysym.scancode == SDL_SCANCODE_F3) { pRenderer->ToggleFireFx(); }
+				else if (e.key.keysym.scancode == SDL_SCANCODE_F4) { pRenderer->CycleSamplerState(); }
+				else if (e.key.keysym.scancode == SDL_SCANCODE_F5) { pRenderer->CycleShadingMode(); }
+				else if (e.key.keysym.scancode == SDL_SCANCODE_F6) { pRenderer->ToggleNormalMap(); }
+				else if (e.key.keysym.scancode == SDL_SCANCODE_F7) { pRenderer->ToggleDepthBufferVisualization(); }
+				else if (e.key.keysym.scancode == SDL_SCANCODE_F8) { pRenderer->ToggleBoundingBoxVisualization(); }
+				else if (e.key.keysym.scancode == SDL_SCANCODE_F9) { pRenderer->CycleCullMode(); }
+				else if (e.key.keysym.scancode == SDL_SCANCODE_F10) { pRenderer->ToggleUniformClearColor(); }
+				else if (e.key.keysym.scancode == SDL_SCANCODE_F11) { ToggleDisplayFPS(); }
+				else if (e.key.keysym.scancode == SDL_SCANCODE_I)
+				{
+					SetConsoleTextAttribute(h, 6);
+					std::cout << "[Key Bindings - SHARED]\n"
+						<< "  [I]   Show Info\n"
+						<< "  [C]   Clear Console\n\n"
+						<< "  [F1]  Toggle Rasterizer Mode (HARDWARE/SOFTWARE)\n"
+						<< "  [F2]  Toggle Vehicle Rotation (ON/OFF)\n"
+						<< "  [F9]  Cycle CullMode (BACK/FRONT/NONE)\n"
+						<< "  [F10] Toggle Uniform ClearColor (ON/OFF)\n"
+						<< "  [F11] Toggle Print FPS (ON/OFF)\n\n";
+					SetConsoleTextAttribute(h, 2);
+					std::cout << "[Key Bindings - HARDWARE]\n"
+						<< "  [F3]  Toggle FireFX (ON/OFF)\n"
+						<< "  [F4]  Cycle Sampler State (POINT/LINEAR/ANISOTROPIC)\n\n";
+					SetConsoleTextAttribute(h, 5);
+					std::cout << "[Key Bindings - SOFTWARE]\n"
+						<< "  [F5]  Cycle Shading Mode (COMBINED/OBSERVED AREA/DIFFUSE/SPECULAR)\n"
+						<< "  [F6]  Toggle NormalMap (ON/OFF)\n"
+						<< "  [F7]  Toggle DepthBuffer Visualization (ON/OFF)\n"
+						<< "  [F8]  Toggle BoundingBox Visualization (ON/OFF)\n";
+					SetConsoleTextAttribute(h, 7);
+				}
+				else if (e.key.keysym.scancode == SDL_SCANCODE_C) { system("CLS"); }
 				break;
 			default: ;
 			}

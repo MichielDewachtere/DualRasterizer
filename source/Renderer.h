@@ -10,25 +10,15 @@ class Mesh;
 class Effect;
 class ShadedEffect;
 class TransEffect;
+class HardwareRenderer;
 
 namespace dae
 {
-	class Renderer final
+	class Texture;
+
+	class Renderer
 	{
 	public:
-		enum class SamplerState
-		{
-			point,
-			linear,
-			anisotropic
-		};
-		enum class CullMode
-		{
-			back,
-			front,
-			none
-		};
-
 		Renderer(SDL_Window* pWindow);
 		~Renderer();
 
@@ -42,35 +32,95 @@ namespace dae
 
 		void ToggleRotation();
 		void ToggleFireFx();
-		void ToggleSamplerState();
-		void ToggleCullMode();
+		void CycleSamplerState();
+		void CycleCullMode();
 		void ToggleUniformClearColor();
+		void ToggleRasterizerMode();
+		void CycleShadingMode();
+		void ToggleNormalMap();
+		void ToggleDepthBufferVisualization();
+		void ToggleBoundingBoxVisualization();
 
 	private:
+		enum class SamplerState
+		{
+			point,
+			linear,
+			anisotropic
+		};
+		enum class CullMode
+		{
+			back,
+			front,
+			none
+		};
+		enum class ShadingMode
+		{
+			observedArea,
+			diffuse,
+			specular,
+			combined
+		};
+
 		SDL_Window* m_pWindow{};
+
+		SDL_Surface* m_pFrontBuffer{ nullptr };
+		SDL_Surface* m_pBackBuffer{ nullptr };
+		uint32_t* m_pBackBufferPixels{};
+
+		float* m_pDepthBufferPixels{};
 
 		int m_Width{};
 		int m_Height{};
 
 		bool m_IsInitialized{ false };
-		bool m_IsRotating{ false };
-		bool m_DisplayFireFX{ true };
 
-		SamplerState m_CurrentSamplerState{ SamplerState::point };
+		//KeyBind Variables
+		bool m_UseHardware{ true };
+		bool m_IsRotating{ false };
+
 		CullMode m_CurrentCullMode{ CullMode::back };
 
 		bool m_UseUniformClearColor{ true };
 		ColorRGB m_BackGroundColor;
 
+		ShadingMode m_CurrentShadingMode{ ShadingMode::combined };
+
+		bool m_EnableNormalMap{ true };
+		bool m_DepthBufferVisualization{ false };
+		bool m_BoundingBoxVisualization{ false };
+
+		SamplerState m_CurrentSamplerState{ SamplerState::point };
+
+		bool m_DisplayFireFX{ true };
+		//////////////
+		
 		Camera* m_pCamera;
 
 		std::map<Mesh*, ShadedEffect*>* m_pMeshToShadedEffectMap;
 		std::map<Mesh*, TransEffect*>* m_pMeshToTransEffectMap;
 
-		void VehicleMeshInit() const;
-		void CombustionMeshInit() const;
-		
-		//DIRECTX
+		Texture* m_pVehicleDiffuse;
+		Texture* m_pVehicleNormalMap;
+		Texture* m_pVehicleGlossinessMap;
+		Texture* m_pVehicleSpecularMap;
+
+		Texture* m_pFireFXDiffuse;
+
+		void VehicleMeshInit();
+		void CombustionMeshInit();
+
+		//SOFTWARE
+		void RenderTriangleList(Mesh& mesh) const;
+		void VertexTransformationFunction(Mesh& meshes) const;
+		void PixelShading(VertexOut& v) const;
+
+		bool IsInFrustum(const VertexOut& v) const;
+		void NDCToRaster(VertexOut& v) const;
+
+		void ClearBackground() const;
+
+		//DIRECTX - HARDWARE
 		HRESULT InitializeDirectX();
 
 		ID3D11Device* m_pDevice;
@@ -88,5 +138,9 @@ namespace dae
 
 		ID3D11SamplerState* m_pSamplerState;
 		ID3D11RasterizerState* m_pRasterizerState;
+
+
+	//private:
+	//	HardwareRenderer* m_pHardwareRenderer;
 	};
 }

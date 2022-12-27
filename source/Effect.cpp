@@ -43,14 +43,10 @@ Effect::~Effect()
 	if (m_pEffect) m_pEffect->Release();
 }
 
-void Effect::SetDiffuseMap(const std::string& filePath, ID3D11Device* pDevice) const
+void Effect::SetDiffuseMap(const Texture* diffuseTexture) const
 {
-	const Texture* diffuseTexture = Texture::LoadFromFile(filePath, pDevice);
-
 	if (m_pDiffuseMapVariable)
 		m_pDiffuseMapVariable->SetResource(diffuseTexture->GetShaderResourceView());
-
-	delete diffuseTexture;
 }
 
 void Effect::SetSamplerState(ID3D11SamplerState* newSamplerState)

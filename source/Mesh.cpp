@@ -2,9 +2,10 @@
 #include "Mesh.h"
 #include "ShadedEffect.h"
 
-Mesh::Mesh(ID3D11Device* pDevice, const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, Effect* pEffect)
-	: m_pEffect{ pEffect }
-	, m_Vertices(vertices)
+Mesh::Mesh(ID3D11Device* pDevice, const std::vector<Vertex>& _vertices, const std::vector<uint32_t>& _indices, Effect* pEffect)
+	: vertices(_vertices)
+	, indices(_indices)
+	, m_pEffect{ pEffect }
 {
 	// Create Vertex Layout
 	static constexpr uint32_t numElements{ 5 };

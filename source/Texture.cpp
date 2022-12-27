@@ -4,8 +4,9 @@
 
 using namespace dae;
 
-Texture::Texture(SDL_Surface* pSurface, ID3D11Device* pDevice) :
-	m_pSurface{ pSurface }
+Texture::Texture(SDL_Surface* pSurface, ID3D11Device* pDevice)
+	: m_pSurface{ pSurface }
+	, m_pSurfacePixels{ (uint32_t*)pSurface->pixels }
 {
 	constexpr DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	D3D11_TEXTURE2D_DESC desc{};
@@ -46,17 +47,17 @@ Texture::Texture(SDL_Surface* pSurface, ID3D11Device* pDevice) :
 		std::cout << "Failed to initialize SRV\n";
 		return;
 	}
-
-	if (m_pSurface)
-	{
-		SDL_FreeSurface(m_pSurface);
-		m_pSurface = nullptr;
-	}
 }
 
 
 Texture::~Texture()
 {
+	if (m_pSurface)
+	{
+		SDL_FreeSurface(m_pSurface);
+		m_pSurface = nullptr;
+	}
+
 	if (m_pSRV) m_pSRV->Release();
 	if (m_pResource) m_pResource->Release();
 }
@@ -67,4 +68,18 @@ Texture* Texture::LoadFromFile(const std::string& path, ID3D11Device* pDevice)
 	//Create & Return a new Texture Object (using SDL_Surface)
 
 	return new Texture{ IMG_Load(path.c_str()), pDevice };
+}
+
+ColorRGB Texture::Sample(const Vector2& uv) const
+{
+	Uint8 r{ 0 }, g{ 0 }, b{ 0 };
+
+	const int x = (int)(uv.x * m_pSurface->w);
+	const int y = (int)(uv.y * m_pSurface->h);
+
+	const int idx{ x + y * m_pSurface->w };
+
+	SDL_GetRGB(m_pSurfacePixels[idx], m_pSurface->format, &r, &g, &b);
+
+	return ColorRGB{ r / 255.f, g / 255.f, b / 255.f };
 }

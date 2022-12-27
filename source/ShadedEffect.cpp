@@ -19,36 +19,22 @@ ShadedEffect::~ShadedEffect()
 	if (m_pMatWorldVariable) m_pMatWorldVariable->Release();
 }
 
-void ShadedEffect::SetNormalMap(const std::string& filePath, ID3D11Device* pDevice) const
+void ShadedEffect::SetNormalMap(const Texture* normalTexture) const
 {
-	const Texture* normalTexture = Texture::LoadFromFile(filePath, pDevice);
-
 	if (m_pNormalMapVariable)
 		m_pNormalMapVariable->SetResource(normalTexture->GetShaderResourceView());
-
-	delete normalTexture;
 }
 
-void ShadedEffect::SetSpecularMap(const std::string& filePath, ID3D11Device* pDevice) const
+void ShadedEffect::SetSpecularMap(const Texture* specularTexture) const
 {
-	const Texture* specularTexture = Texture::LoadFromFile(filePath, pDevice);
-
 	if (m_pSpecularMapVariable)
 		m_pSpecularMapVariable->SetResource(specularTexture->GetShaderResourceView());
-
-	delete specularTexture;
-
 }
 
-void ShadedEffect::SetGlossinessMap(const std::string& filePath, ID3D11Device* pDevice) const
+void ShadedEffect::SetGlossinessMap(const Texture* glossinessTexture) const
 {
-	const Texture* glossinessTexture = Texture::LoadFromFile(filePath, pDevice);
-
 	if (m_pGlossinessMapVariable)
 		m_pGlossinessMapVariable->SetResource(glossinessTexture->GetShaderResourceView());
-
-	delete glossinessTexture;
-
 }
 
 void ShadedEffect::InitMatrixVariables()

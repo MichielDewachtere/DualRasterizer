@@ -1,4 +1,5 @@
 #pragma once
+#include "Texture.h"
 
 using namespace dae;
 
@@ -22,7 +23,7 @@ public:
 		m_pMatWorldViewProjVariable->SetMatrix(reinterpret_cast<const float*>(&newValue));
 	}
 
-	virtual void SetDiffuseMap(const std::string& filePath, ID3D11Device* pDevice) const;
+	virtual void SetDiffuseMap(const Texture* diffuseTexture) const;
 	virtual void SetSamplerState(ID3D11SamplerState* newSamplerState);
 	virtual void SetRasterizerState(ID3D11RasterizerState* newRasterizerState);
 protected:
